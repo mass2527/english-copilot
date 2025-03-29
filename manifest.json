@@ -1,0 +1,15 @@
+{
+  "name": "English Copilot",
+  "description": "Enhance your understanding of English content with AI assistance",
+  "version": "1.0",
+  "manifest_version": 3,
+  "action": {
+    "default_popup": "popup.html"
+  },
+  "content_scripts": [
+    {
+      "js": ["dist/content.js"],
+      "matches": ["<all_urls>"]
+    }
+  ]
+}
