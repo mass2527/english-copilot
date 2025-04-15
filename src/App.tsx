@@ -3,6 +3,7 @@ import { debounce } from "./lib/debounce";
 import { invariant } from "./lib/invariant";
 import { useLatestRef } from "./hooks/useLatestRef";
 import { WordTooltip } from "./components/WordTooltip";
+import { useIsCommandKeyPressed } from "./hooks/useIsCommandKeyPressed";
 
 type Point = {
   x: number;
@@ -77,38 +78,6 @@ export type WordDetails = {
   examples: { text: string; meaning: string }[];
 };
 
-function useIsMetaKeyPressed() {
-  const [isMetaKeyPressed, setIsMetaKeyPressed] = useState(false);
-
-  useEffect(() => {
-    function handleKeyDown(event: KeyboardEvent) {
-      if (event.key === "Meta") {
-        setIsMetaKeyPressed(true);
-      }
-    }
-
-    window.addEventListener("keydown", handleKeyDown);
-
-    return () => {
-      window.removeEventListener("keydown", handleKeyDown);
-    };
-  }, []);
-
-  useEffect(() => {
-    function handleKeyUp() {
-      setIsMetaKeyPressed(false);
-    }
-
-    window.addEventListener("keyup", handleKeyUp);
-
-    return () => {
-      window.removeEventListener("keyup", handleKeyUp);
-    };
-  }, []);
-
-  return isMetaKeyPressed;
-}
-
 function useWordDetails({
   enabled,
   shouldSkip,
@@ -176,9 +145,9 @@ function useWordDetails({
 
 export function App() {
   const popoverRef = useRef<HTMLDivElement>(null);
-  const isMetaKeyPressed = useIsMetaKeyPressed();
+  const isCommandKeyPressed = useIsCommandKeyPressed();
   const { point, wordDetails } = useWordDetails({
-    enabled: isMetaKeyPressed,
+    enabled: isCommandKeyPressed,
     shouldSkip: (event) => {
       const popoverElement = popoverRef.current;
 
