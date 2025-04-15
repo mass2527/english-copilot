@@ -1,12 +1,4 @@
-import {
-  forwardRef,
-  useEffect,
-  useRef,
-  useState,
-  type CSSProperties,
-  type ReactNode,
-} from "react";
-import { Volume2 } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 import { debounce } from "./lib/debounce";
 import { invariant } from "./lib/invariant";
 import { useLatestRef } from "./hooks/useLatestRef";
@@ -206,87 +198,6 @@ export function App() {
   }
 
   return (
-    // <Popover ref={popoverRef} style={{ top: point.y, left: point.x }}>
-    //   {wordDetails.definitions.length > 0 ? (
-    //     <WordDetails {...wordDetails} />
-    //   ) : (
-    //     <div>단어 정보가 존재하지 않습니다.</div>
-    //   )}
-    // </Popover>
-
     <WordTooltip {...wordDetails} style={{ top: point.y, left: point.x }} />
   );
 }
-
-const ACCENT_LABELS = {
-  american: "미국",
-  british: "영국",
-};
-
-function WordDetails({ word, definitions, pronunciations }: WordDetails) {
-  const audioRef = useRef(new Audio());
-
-  function playAudio(src: string) {
-    audioRef.current.src = src;
-    audioRef.current.play();
-  }
-
-  return (
-    <div>
-      <h1>{word}</h1>
-
-      <ul>
-        {definitions.map((definition) => {
-          return <li key={definition}>{definition}</li>;
-        })}
-      </ul>
-
-      <div>
-        {pronunciations.map((pronunciation) => {
-          return (
-            <div style={{ display: "flex", gap: "8px" }}>
-              <span>
-                {ACCENT_LABELS[pronunciation.accent]} [{pronunciation.symbol}]
-              </span>
-              <button
-                type="button"
-                onClick={() => {
-                  playAudio(pronunciation.href);
-                }}
-                aria-label="발음 듣기"
-              >
-                <Volume2 size={16} />
-              </button>
-            </div>
-          );
-        })}
-      </div>
-    </div>
-  );
-}
-
-interface PopOverProps {
-  style?: CSSProperties;
-  children: ReactNode;
-}
-
-const Popover = forwardRef<HTMLDivElement, PopOverProps>(
-  ({ style, children }, ref) => {
-    return (
-      <div
-        ref={ref}
-        style={{
-          position: "absolute",
-          backgroundColor: "white",
-          color: "black",
-          border: "1px solid black",
-          borderRadius: "4px",
-          padding: "16px",
-          ...style,
-        }}
-      >
-        {children}
-      </div>
-    );
-  }
-);
