@@ -1,7 +1,15 @@
-const path = require("path");
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 
-module.exports = {
-  entry: "./src/Content.tsx",
+const fileURL = import.meta.url;
+const filepath = fileURLToPath(fileURL);
+const dirname = path.dirname(filepath);
+
+export default {
+  entry: {
+    Content: "./src/Content.tsx",
+    background: "./src/background.ts",
+  },
   module: {
     rules: [
       {
@@ -21,10 +29,10 @@ module.exports = {
     ],
   },
   resolve: {
-    extensions: [".tsx", ".ts"],
+    extensions: [".tsx", ".ts", ".js"],
   },
   output: {
-    filename: "Content.js",
-    path: path.resolve(__dirname, "dist"),
+    filename: "[name].js",
+    path: path.resolve(dirname, "dist"),
   },
 };
