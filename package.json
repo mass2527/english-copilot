@@ -27,7 +27,6 @@
     "webpack-ext-reloader": "^1.1.13"
   },
   "dependencies": {
-    "@radix-ui/react-popover": "^1.1.7",
     "cheerio": "^1.0.0",
     "lucide-react": "^0.487.0",
     "react": "^18.3.1",

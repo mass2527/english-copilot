@@ -1,4 +1,3 @@
-import * as PopoverPrimitive from "@radix-ui/react-popover";
 import { Volume2 } from "lucide-react";
 import { useRef, type CSSProperties } from "react";
 import type { WordDetails } from "../App";
@@ -18,18 +17,17 @@ export function WordTooltip({
   };
 
   return (
-    <PopoverPrimitive.Root open>
-      <PopoverPrimitive.Content
-        style={{
-          position: "absolute",
-          width: "280px",
-          backgroundColor: "#ffffff",
-          borderRadius: "4px",
-          boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
-          ...style,
-        }}
-        align="start"
-      >
+    <div
+      style={{
+        position: "absolute",
+        width: "280px",
+        backgroundColor: "#ffffff",
+        borderRadius: "4px",
+        boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+        ...style,
+      }}
+    >
+      {word.definitions.length > 0 ? (
         <div style={{ padding: "12px" }}>
           <h3
             style={{
@@ -95,7 +93,11 @@ export function WordTooltip({
           {word.examples.length > 0 && (
             <div style={{ marginTop: "12px" }}>
               <div
-                style={{ display: "flex", flexDirection: "column", gap: "8px" }}
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "8px",
+                }}
               >
                 {word.examples.map((example, index) => (
                   <div
@@ -124,7 +126,9 @@ export function WordTooltip({
             </div>
           )}
         </div>
-      </PopoverPrimitive.Content>
-    </PopoverPrimitive.Root>
+      ) : (
+        <span>단어 정보를 찾을 수 없습니다.</span>
+      )}
+    </div>
   );
 }
