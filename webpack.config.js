@@ -1,11 +1,14 @@
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import ExtReloader from "webpack-ext-reloader";
 
 const fileURL = import.meta.url;
 const filepath = fileURLToPath(fileURL);
 const dirname = path.dirname(filepath);
 
 export default {
+  mode: "development",
+  devtool: "source-map",
   entry: {
     Content: "./src/Content.tsx",
     background: "./src/background.ts",
@@ -35,4 +38,14 @@ export default {
     filename: "[name].js",
     path: path.resolve(dirname, "dist"),
   },
+  plugins: [
+    new ExtReloader({
+      port: 9090,
+      reloadPage: true,
+      entries: {
+        background: "background",
+        contentScript: "Content",
+      },
+    }),
+  ],
 };
