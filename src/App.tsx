@@ -198,6 +198,9 @@ export function App() {
   }
 
   return (
-    <WordTooltip {...wordDetails} style={{ top: point.y, left: point.x }} />
+    <WordTooltip
+      {...wordDetails}
+      style={{ top: point.y + window.scrollY, left: point.x + window.scrollX }}
+    />
   );
 }
