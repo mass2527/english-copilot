@@ -1,6 +1,7 @@
 import { Volume2 } from "lucide-react";
 import { useRef, type CSSProperties } from "react";
-import type { WordDetails } from "../App";
+
+import type { WordDetails } from "../types";
 import { invariant } from "../lib/invariant";
 
 export function WordTooltip({
