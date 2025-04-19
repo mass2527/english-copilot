@@ -11,5 +11,5 @@ export type WordDetails = {
     symbol: string;
     href: string;
   }[];
-  examples: { text: string; meaning: string }[];
+  examples: { sentence: string; translation: string }[];
 };

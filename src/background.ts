@@ -37,8 +37,8 @@ async function fetchWordDetails(word: string) {
     .first()
     .find(".box_example")
     .map((_, el) => ({
-      text: $(el).find(".txt_example .txt_ex").text(),
-      meaning: $(el).find(".mean_example .txt_ex").text(),
+      sentence: $(el).find(".txt_example .txt_ex").text(),
+      translation: $(el).find(".mean_example .txt_ex").text(),
     }))
     .get();
 

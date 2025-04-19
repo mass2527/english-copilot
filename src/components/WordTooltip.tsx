@@ -1,135 +1,252 @@
-import { Volume2 } from "lucide-react";
-import { useRef, type CSSProperties } from "react";
+import { forwardRef, useRef, useState, type CSSProperties } from "react";
 
 import type { WordDetails } from "../types";
 import { invariant } from "../lib/invariant";
+import { ExternalLinkIcon, SearchIcon } from "lucide-react";
+import { SpeakerIcon } from "./SpeakerIcon";
+import { GoogleIcon } from "./GoogleIcon";
+import { useAudioEventListener } from "../hooks/useAudioEventListener";
 
-export function WordTooltip({
-  style,
-  ...word
-}: WordDetails & { style: CSSProperties }) {
+type Pronunciation = WordDetails["pronunciations"][number];
+type Accent = Pronunciation["accent"];
+
+export const WordTooltip = forwardRef<
+  HTMLDivElement,
+  WordDetails & { style: CSSProperties }
+>(function ({ style, ...word }, ref) {
   const audioRef = useRef<HTMLAudioElement>(null);
+  const [playingAccent, setPlayingAccent] = useState<"none" | Accent>("none");
+  const hasDefinitions = word.definitions.length > 0;
 
-  const playAudio = (href: string) => {
+  const playPronunciation = (pronunciation: Pronunciation) => {
     const audioElement = audioRef.current;
     invariant(audioElement !== null);
-    audioElement.src = href;
-    audioElement.play().catch(console.error);
+    audioElement.src = pronunciation.href;
+
+    setPlayingAccent(pronunciation.accent);
+    audioElement.play();
   };
+
+  useAudioEventListener(audioRef, "ended", () => {
+    setPlayingAccent("none");
+  });
 
   return (
     <div
+      ref={ref}
       style={{
         position: "absolute",
-        width: "280px",
-        backgroundColor: "#ffffff",
-        borderRadius: "4px",
-        boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+        transform: "translateX(-50%)",
+        width: "320px",
+        backgroundColor: "rgba(255, 255, 255, 0.95)",
+        borderRadius: "6px",
+        boxShadow: "0 4px 20px rgba(0, 0, 0, 0.08)",
+        zIndex: 1000,
+        backdropFilter: "blur(10px)",
+        border: "1px solid rgba(0, 0, 0, 0.06)",
+        fontSize: "16px",
+        color: "#000",
         ...style,
       }}
     >
-      {word.definitions.length > 0 ? (
-        <div style={{ padding: "12px" }}>
-          <h3
+      <audio ref={audioRef} />
+
+      {hasDefinitions ? (
+        <>
+          <div
             style={{
-              fontSize: "1rem",
-              fontWeight: 500,
-              margin: "0 0 8px 0",
-              color: "#000000",
+              padding: "16px",
+              borderBottom: "1px solid rgba(0, 0, 0, 0.06)",
             }}
           >
-            {word.word}
-          </h3>
-          <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-            {word.pronunciations.map((pron, index) => (
-              <div
-                key={index}
+            <h3
+              style={{
+                fontSize: "20px",
+                fontWeight: 700,
+                margin: "0 0 8px 0",
+                color: hasDefinitions ? "#007AFF" : "#000",
+              }}
+            >
+              <a
+                href={`https://dic.daum.net/search.do?q=${word.word}&dic=eng&search_first=Y`}
+                target="_blank"
+                rel="noopener noreferrer"
                 style={{
+                  textDecoration: "none",
                   display: "flex",
                   alignItems: "center",
-                  gap: "8px",
+                  gap: "6px",
                 }}
               >
-                <span style={{ fontSize: "0.75rem", color: "#374151" }}>
-                  {pron.accent}
-                </span>
-                <span style={{ fontSize: "0.875rem", color: "#374151" }}>
-                  {pron.symbol}
-                </span>
-                {pron.href && (
-                  <button
-                    type="button"
-                    onClick={() => playAudio(pron.href)}
-                    style={{
-                      padding: "4px",
-                      background: "none",
-                      border: "none",
-                      cursor: "pointer",
-                      color: "#374151",
-                    }}
+                {word.word}
+                <ExternalLinkIcon size={16} />
+              </a>
+            </h3>
+            <div
+              style={{
+                display: "flex",
+                flexWrap: "wrap",
+                gap: "12px",
+                fontSize: "14px",
+              }}
+            >
+              {word.pronunciations.map((pronunciation) => {
+                const label = { american: "미국", british: "영국" }[
+                  pronunciation.accent
+                ];
+                return (
+                  <div
+                    key={pronunciation.href}
+                    style={{ display: "flex", alignItems: "center" }}
                   >
-                    <Volume2 size={14} />
                     <span
                       style={{
-                        position: "absolute",
-                        width: "1px",
-                        height: "1px",
-                        padding: 0,
-                        margin: "-1px",
-                        overflow: "hidden",
-                        clip: "rect(0, 0, 0, 0)",
-                        whiteSpace: "nowrap",
-                        borderWidth: 0,
+                        backgroundColor: "rgba(88, 86, 214, 0.1)",
+                        borderRadius: "4px",
+                        padding: "2px 8px",
+                        color: "#5856D6",
+                        fontWeight: 500,
+                        marginRight: "6px",
                       }}
                     >
-                      Play {pron.accent} pronunciation
+                      {label}:{" "}
+                      <span style={{ fontStyle: "italic" }}>
+                        {pronunciation.symbol}
+                      </span>
                     </span>
-                  </button>
-                )}
-              </div>
-            ))}
-            <audio ref={audioRef} />
+                    <button
+                      onClick={() => playPronunciation(pronunciation)}
+                      style={{
+                        background: "none",
+                        border: "none",
+                        cursor: "pointer",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        width: "22px",
+                        height: "22px",
+                        borderRadius: "50%",
+                        transition: "background-color 0.2s ease",
+                        padding: 0,
+                      }}
+                      aria-label="Play pronunciation"
+                    >
+                      <SpeakerIcon
+                        isPlaying={pronunciation.accent === playingAccent}
+                      />
+                    </button>
+                  </div>
+                );
+              })}
+            </div>
           </div>
 
-          {word.examples.length > 0 && (
-            <div style={{ marginTop: "12px" }}>
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: "8px",
-                }}
-              >
-                {word.examples.map((example, index) => (
-                  <div
-                    key={index}
-                    style={{
-                      display: "flex",
-                      flexDirection: "column",
-                      gap: "4px",
-                    }}
-                  >
-                    <p style={{ fontSize: "0.875rem", color: "#000000" }}>
-                      {example.text}
-                    </p>
-                    <p
-                      style={{
-                        fontSize: "0.75rem",
-                        color: "#374151",
-                        fontStyle: "italic",
-                      }}
-                    >
-                      {example.meaning}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-        </div>
+          <div
+            style={{
+              overflowY: "auto",
+              overscrollBehaviorY: "contain",
+              maxHeight: "300px",
+              padding: "16px",
+            }}
+          >
+            <ol
+              style={{
+                lineHeight: "1.5",
+                marginBottom: "12px",
+                listStyle: "decimal",
+                listStylePosition: "inside",
+              }}
+            >
+              {word.definitions.map((definition) => {
+                return <li key={definition}>{definition}</li>;
+              })}
+            </ol>
+
+            {word.examples.slice(0, 1).map((example) => {
+              return (
+                <div
+                  key={example.sentence}
+                  style={{
+                    padding: "8px 0 0 0",
+                    borderTop: "1px solid rgba(0, 0, 0, 0.06)",
+                  }}
+                >
+                  <p>{example.sentence}</p>
+                  <p style={{ color: "rgba(0,0,0,0.6)", fontSize: "14px" }}>
+                    {example.translation}
+                  </p>
+                </div>
+              );
+            })}
+          </div>
+        </>
       ) : (
-        <span>단어 정보를 찾을 수 없습니다.</span>
+        <NoDefinitionsFound {...word} />
       )}
+    </div>
+  );
+});
+
+function NoDefinitionsFound({ word }: WordDetails) {
+  return (
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        padding: "16px 0",
+        gap: "12px",
+      }}
+    >
+      <div
+        style={{
+          width: "48px",
+          height: "48px",
+          borderRadius: "50%",
+          backgroundColor: "rgba(0, 122, 255, 0.1)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <SearchIcon />
+      </div>
+      <div
+        style={{
+          fontSize: "14px",
+          color: "#666",
+          textAlign: "center",
+        }}
+      >
+        <p style={{ margin: "0 0 8px 0" }}>
+          "{word}"에 대한 정보를 찾을 수 없습니다.
+        </p>
+      </div>
+      <a
+        href={`https://www.google.com/search?q=${word}`}
+        target="_blank"
+        rel="noopener noreferrer"
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          gap: "6px",
+          backgroundColor: "#007AFF",
+          color: "white",
+          border: "none",
+          borderRadius: "8px",
+          padding: "8px 16px",
+          fontSize: "14px",
+          fontWeight: 500,
+          cursor: "pointer",
+          transition: "background-color 0.2s ease",
+        }}
+        onMouseOver={(e) => (e.currentTarget.style.backgroundColor = "#0062CC")}
+        onMouseOut={(e) => (e.currentTarget.style.backgroundColor = "#007AFF")}
+      >
+        <GoogleIcon /> Google에서 검색
+      </a>
     </div>
   );
 }
