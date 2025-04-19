@@ -81,7 +81,14 @@ export function useWordDetails({
         y: event.clientY,
       });
 
-      if (word === null || word === "") return;
+      if (word === null) {
+        return;
+      }
+
+      const isSameWord = word === wordDetails?.word;
+      if (isSameWord) {
+        return;
+      }
 
       const response = await chrome.runtime.sendMessage({
         data: word.toLowerCase(),
