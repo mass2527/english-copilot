@@ -2,7 +2,7 @@ import { useEffect, type RefObject } from "react";
 import { invariant } from "../lib/invariant";
 import { useStableCallback } from "./useStableCallback";
 
-export function useAudioEvent<T extends keyof HTMLMediaElementEventMap>(
+export function useAudioEventListener<T extends keyof HTMLMediaElementEventMap>(
   audioRef: RefObject<HTMLAudioElement>,
   type: T,
   listener: (event: HTMLMediaElementEventMap[T]) => any,
