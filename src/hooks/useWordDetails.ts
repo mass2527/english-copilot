@@ -1,12 +1,12 @@
 import { useState } from "react";
 
-import { useEffect } from "react";
 import { useLatestRef } from "./useLatestRef";
 
 import { invariant } from "../lib/invariant";
 import type { Point, WordDetails } from "../types";
 import { isPointInRect } from "../lib/isPointInRect";
 import { debounce } from "../lib/debounce";
+import { useWindowEventListener } from "./useWindowEventListener";
 
 function findWordAtIndex(text: string, index: number) {
   let startIndex = index;
@@ -67,54 +67,40 @@ export function useWordDetails({
   const [point, setPoint] = useState<Point>({ x: 0, y: 0 });
   const latestEnabledRef = useLatestRef(enabled);
 
-  useEffect(() => {
-    async function handleMouseMove(event: MouseEvent) {
-      if (latestEnabledRef.current) {
-        if (shouldSkip?.(event)) {
-          return;
-        }
-
-        const element = document.elementFromPoint(event.clientX, event.clientY);
-        if (element === null) return;
-
-        const word = findWordAtPointer(element, {
-          x: event.clientX,
-          y: event.clientY,
-        });
-
-        if (word === null || word === "") return;
-
-        const response = await chrome.runtime.sendMessage({
-          data: word.toLowerCase(),
-        });
-        setWordDetails(response);
-        const elementFontSize = parseInt(getComputedStyle(element).fontSize);
-
-        setPoint({
-          x: event.clientX + window.scrollX,
-          y: event.clientY + elementFontSize,
-        });
+  async function handleMouseMove(event: MouseEvent) {
+    if (latestEnabledRef.current) {
+      if (shouldSkip?.(event)) {
+        return;
       }
+
+      const element = document.elementFromPoint(event.clientX, event.clientY);
+      if (element === null) return;
+
+      const word = findWordAtPointer(element, {
+        x: event.clientX,
+        y: event.clientY,
+      });
+
+      if (word === null || word === "") return;
+
+      const response = await chrome.runtime.sendMessage({
+        data: word.toLowerCase(),
+      });
+      setWordDetails(response);
+      const elementFontSize = parseInt(getComputedStyle(element).fontSize);
+
+      setPoint({
+        x: event.clientX + window.scrollX,
+        y: event.clientY + elementFontSize,
+      });
     }
+  }
 
-    const debouncedHandleMouseMove = debounce(handleMouseMove, 100);
+  useWindowEventListener("mousemove", debounce(handleMouseMove, 100));
 
-    window.addEventListener("mousemove", debouncedHandleMouseMove);
-    return () => {
-      window.removeEventListener("mousemove", debouncedHandleMouseMove);
-    };
-  }, []);
-
-  useEffect(() => {
-    function handleKeyUp() {
-      setWordDetails(null);
-    }
-
-    window.addEventListener("keyup", handleKeyUp);
-    return () => {
-      window.removeEventListener("keyup", handleKeyUp);
-    };
-  }, []);
+  useWindowEventListener("keyup", () => {
+    setWordDetails(null);
+  });
 
   return { wordDetails, point };
 }
