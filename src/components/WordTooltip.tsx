@@ -1,22 +1,27 @@
-import { forwardRef, useRef, useState, type CSSProperties } from "react";
+import { forwardRef, useRef, useState } from "react";
 
-import type { WordDetails } from "../types";
+import type { Point, WordDetails } from "../types";
 import { invariant } from "../lib/invariant";
 import { ExternalLinkIcon, SearchIcon } from "lucide-react";
 import { SpeakerIcon } from "./SpeakerIcon";
 import { GoogleIcon } from "./GoogleIcon";
 import { useAudioEventListener } from "../hooks/useAudioEventListener";
+import { useComposedRef } from "../hooks/useComposedRef";
+import { usePopoverPosition } from "../hooks/usePopoverPosition";
 
 type Pronunciation = WordDetails["pronunciations"][number];
 type Accent = Pronunciation["accent"];
 
 export const WordTooltip = forwardRef<
   HTMLDivElement,
-  WordDetails & { style: CSSProperties }
->(function ({ style, ...word }, ref) {
+  WordDetails & { point: Point }
+>(function ({ point, ...word }, forwardedRef) {
   const audioRef = useRef<HTMLAudioElement>(null);
   const [playingAccent, setPlayingAccent] = useState<"none" | Accent>("none");
   const hasDefinitions = word.definitions.length > 0;
+  const innerRef = useRef<HTMLDivElement>(null);
+  const composedRef = useComposedRef(forwardedRef, innerRef);
+  const position = usePopoverPosition(innerRef, point);
 
   const playPronunciation = (pronunciation: Pronunciation) => {
     const audioElement = audioRef.current;
@@ -33,7 +38,7 @@ export const WordTooltip = forwardRef<
 
   return (
     <div
-      ref={ref}
+      ref={composedRef}
       style={{
         position: "absolute",
         transform: "translateX(-50%)",
@@ -46,7 +51,7 @@ export const WordTooltip = forwardRef<
         border: "1px solid rgba(0, 0, 0, 0.06)",
         fontSize: "16px",
         color: "#000",
-        ...style,
+        ...position,
       }}
     >
       <audio ref={audioRef} />

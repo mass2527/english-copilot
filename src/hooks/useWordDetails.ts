@@ -97,7 +97,7 @@ export function useWordDetails({
       const elementFontSize = parseInt(getComputedStyle(element).fontSize);
 
       setPoint({
-        x: event.clientX + window.scrollX,
+        x: event.clientX,
         y: event.clientY + elementFontSize,
       });
     }

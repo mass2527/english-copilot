@@ -27,11 +27,5 @@ export function App() {
     return null;
   }
 
-  return (
-    <WordTooltip
-      ref={popoverRef}
-      {...wordDetails}
-      style={{ top: point.y + window.scrollY, left: point.x + window.scrollX }}
-    />
-  );
+  return <WordTooltip ref={popoverRef} {...wordDetails} point={point} />;
 }
