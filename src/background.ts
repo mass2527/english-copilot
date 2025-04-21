@@ -49,9 +49,8 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   (async () => {
     try {
       const word = message.data;
-      const { definitions, pronunciations, examples } = await fetchWordDetails(
-        word
-      );
+      const { definitions, pronunciations, examples } =
+        await fetchWordDetails(word);
 
       sendResponse({ word, definitions, pronunciations, examples });
     } catch (error) {
