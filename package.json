@@ -6,7 +6,7 @@
   "scripts": {
     "build": "webpack",
     "build:watch": "webpack --watch",
-    "format": "biome format --write ."
+    "format": "biome check --fix"
   },
   "type": "module",
   "keywords": [],
