@@ -1,4 +1,4 @@
-import { useLayoutEffect, useState, type RefObject } from "react";
+import { type RefObject, useLayoutEffect, useState } from "react";
 import { clamp } from "../lib/clamp";
 import type { Point } from "../types";
 
@@ -57,7 +57,7 @@ export function usePopoverPosition(
       top,
       left,
     });
-  }, [point]);
+  }, [popoverRef, point, horizontalAlignment, padding]);
 
   return position;
 }

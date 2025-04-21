@@ -1,13 +1,13 @@
 import { forwardRef, useRef, useState } from "react";
 
-import type { Point, WordDetails } from "../types";
-import { invariant } from "../lib/invariant";
 import { ExternalLinkIcon, SearchIcon } from "lucide-react";
-import { SpeakerIcon } from "./SpeakerIcon";
-import { GoogleIcon } from "./GoogleIcon";
 import { useAudioEventListener } from "../hooks/useAudioEventListener";
 import { useComposedRef } from "../hooks/useComposedRef";
 import { usePopoverPosition } from "../hooks/usePopoverPosition";
+import { invariant } from "../lib/invariant";
+import type { Point, WordDetails } from "../types";
+import { GoogleIcon } from "./GoogleIcon";
+import { SpeakerIcon } from "./SpeakerIcon";
 
 type Pronunciation = WordDetails["pronunciations"][number];
 type Accent = Pronunciation["accent"];
@@ -15,7 +15,7 @@ type Accent = Pronunciation["accent"];
 export const WordTooltip = forwardRef<
   HTMLDivElement,
   WordDetails & { point: Point }
->(function ({ point, ...word }, forwardedRef) {
+>(({ point, ...word }, forwardedRef) => {
   const audioRef = useRef<HTMLAudioElement>(null);
   const [playingAccent, setPlayingAccent] = useState<"none" | Accent>("none");
   const hasDefinitions = word.definitions.length > 0;
@@ -54,6 +54,7 @@ export const WordTooltip = forwardRef<
         ...position,
       }}
     >
+      {/* biome-ignore lint/a11y/useMediaCaption: */}
       <audio ref={audioRef} />
 
       {hasDefinitions ? (
@@ -120,6 +121,7 @@ export const WordTooltip = forwardRef<
                       </span>
                     </span>
                     <button
+                      type="button"
                       onClick={() => playPronunciation(pronunciation)}
                       style={{
                         background: "none",
@@ -247,8 +249,12 @@ function NoDefinitionsFound({ word }: WordDetails) {
           cursor: "pointer",
           transition: "background-color 0.2s ease",
         }}
-        onMouseOver={(e) => (e.currentTarget.style.backgroundColor = "#0062CC")}
-        onMouseOut={(e) => (e.currentTarget.style.backgroundColor = "#007AFF")}
+        onMouseOver={(e) => {
+          e.currentTarget.style.backgroundColor = "#0062CC";
+        }}
+        onMouseOut={(e) => {
+          e.currentTarget.style.backgroundColor = "#007AFF";
+        }}
       >
         <GoogleIcon /> Google에서 검색
       </a>

@@ -10,6 +10,7 @@ export function SpeakerIcon({ isPlaying }: { isPlaying: boolean }) {
         color: isPlaying ? "#007AFF" : "#666",
       }}
     >
+      <title>Speaker</title>
       <path
         d="M11 5L6 9H2V15H6L11 19V5Z"
         stroke="currentColor"

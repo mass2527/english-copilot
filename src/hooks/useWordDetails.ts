@@ -2,10 +2,10 @@ import { useState } from "react";
 
 import { useLatestRef } from "./useLatestRef";
 
-import { invariant } from "../lib/invariant";
-import type { Point, WordDetails } from "../types";
-import { isPointInRect } from "../lib/isPointInRect";
 import { debounce } from "../lib/debounce";
+import { invariant } from "../lib/invariant";
+import { isPointInRect } from "../lib/isPointInRect";
+import type { Point, WordDetails } from "../types";
 import { useWindowEventListener } from "./useWindowEventListener";
 
 function findWordAtIndex(text: string, index: number) {
@@ -35,21 +35,21 @@ function findWordAtPointer(node: Node, point: Point) {
     invariant(text !== null);
 
     return findWordAtIndex(text, offset);
-  } else {
-    for (let i = 0; i < node.childNodes.length; i++) {
-      const childNode = node.childNodes[i];
-      invariant(childNode !== undefined);
+  }
 
-      const document = childNode?.ownerDocument;
-      invariant(document instanceof Document);
+  for (let i = 0; i < node.childNodes.length; i++) {
+    const childNode = node.childNodes[i];
+    invariant(childNode !== undefined);
 
-      const range = document.createRange();
-      range.selectNodeContents(childNode);
-      const rect = range.getBoundingClientRect();
+    const document = childNode?.ownerDocument;
+    invariant(document instanceof Document);
 
-      if (isPointInRect(rect, point)) {
-        return findWordAtPointer(childNode, point);
-      }
+    const range = document.createRange();
+    range.selectNodeContents(childNode);
+    const rect = range.getBoundingClientRect();
+
+    if (isPointInRect(rect, point)) {
+      return findWordAtPointer(childNode, point);
     }
   }
 
@@ -94,7 +94,9 @@ export function useWordDetails({
         data: word.toLowerCase(),
       });
       setWordDetails(response);
-      const elementFontSize = parseInt(getComputedStyle(element).fontSize);
+      const elementFontSize = Number.parseInt(
+        getComputedStyle(element).fontSize
+      );
 
       setPoint({
         x: event.clientX,

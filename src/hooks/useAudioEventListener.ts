@@ -1,10 +1,11 @@
-import { useEffect, type RefObject } from "react";
+import { type RefObject, useEffect } from "react";
 import { invariant } from "../lib/invariant";
 import { useStableCallback } from "./useStableCallback";
 
 export function useAudioEventListener<T extends keyof HTMLMediaElementEventMap>(
   audioRef: RefObject<HTMLAudioElement>,
   type: T,
+  // biome-ignore lint/suspicious/noExplicitAny:
   listener: (event: HTMLMediaElementEventMap[T]) => any,
   options?: boolean | AddEventListenerOptions
 ) {
@@ -18,5 +19,5 @@ export function useAudioEventListener<T extends keyof HTMLMediaElementEventMap>(
     return () => {
       audioElement.removeEventListener(type, stableListener, options);
     };
-  }, [stableListener]);
+  }, [audioRef, stableListener, options, type]);
 }

@@ -6,7 +6,7 @@ export function useComposedRef<T extends HTMLElement>(
 ) {
   return useCallback(
     (node: T | null) => {
-      refs.forEach((ref) => {
+      for (const ref of refs) {
         if (ref === null) {
           return;
         }
@@ -16,7 +16,7 @@ export function useComposedRef<T extends HTMLElement>(
         } else {
           ref.current = node;
         }
-      });
+      }
     },
     [refs]
   );
