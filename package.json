@@ -4,9 +4,10 @@
   "description": "",
   "private": true,
   "scripts": {
-    "build": "webpack",
-    "build:watch": "webpack --watch",
-    "format": "biome check --fix"
+    "dev": "webpack --watch --mode development",
+    "build": "webpack --mode production",
+    "format": "biome check --fix",
+    "release": "pnpm run build && zip -r english-copilot.zip ./dist"
   },
   "type": "module",
   "keywords": [],
