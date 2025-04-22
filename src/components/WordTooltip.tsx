@@ -180,7 +180,7 @@ export const WordTooltip = forwardRef<
                   <div
                     key={example.sentence}
                     style={{
-                      padding: "8px 0 0 0",
+                      padding: "0px",
                       borderTop: "1px solid rgba(0, 0, 0, 0.06)",
                     }}
                   >
@@ -210,7 +210,7 @@ function NoDefinitionsFound({ word }: WordDetails) {
         alignItems: "center",
         justifyContent: "center",
         padding: "16px 0",
-        gap: "12px",
+        gap: "16px",
       }}
     >
       <div
