@@ -3,6 +3,12 @@
   "description": "단어 위에 마우스를 올려보세요.\n뜻, 발음, 예문, 모든 정보를 즉시 확인할 수 있습니다.\n흐름 끊김 없이 영어로 된 정보를 학습하세요.",
   "version": "1.0",
   "manifest_version": 3,
+  "web_accessible_resources": [
+    {
+      "resources": ["assets/fonts/*"],
+      "matches": ["https://*/*"]
+    }
+  ],
   "action": {
     "default_popup": "popup.html"
   },

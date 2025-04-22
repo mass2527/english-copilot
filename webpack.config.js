@@ -40,7 +40,10 @@ export default {
   },
   plugins: [
     new CopyPlugin({
-      patterns: [{ from: "manifest.json", to: "manifest.json" }],
+      patterns: [
+        { from: "manifest.json", to: "manifest.json" },
+        { from: "static", to: "static" },
+      ],
     }),
     new ExtReloader({
       port: 9090,

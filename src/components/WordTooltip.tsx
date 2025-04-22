@@ -150,6 +150,9 @@ export const WordTooltip = forwardRef<
 
           <div
             style={{
+              display: "flex",
+              flexDirection: "column",
+              gap: "12px",
               overflowY: "auto",
               overscrollBehaviorY: "contain",
               maxHeight: "300px",
@@ -162,6 +165,8 @@ export const WordTooltip = forwardRef<
                 marginBottom: "12px",
                 listStyle: "decimal",
                 listStylePosition: "inside",
+                margin: "0px",
+                paddingLeft: "0px",
               }}
             >
               {word.definitions.map((definition) => {
@@ -169,22 +174,24 @@ export const WordTooltip = forwardRef<
               })}
             </ol>
 
-            {word.examples.slice(0, 1).map((example) => {
-              return (
-                <div
-                  key={example.sentence}
-                  style={{
-                    padding: "8px 0 0 0",
-                    borderTop: "1px solid rgba(0, 0, 0, 0.06)",
-                  }}
-                >
-                  <p>{example.sentence}</p>
-                  <p style={{ color: "rgba(0,0,0,0.6)", fontSize: "14px" }}>
-                    {example.translation}
-                  </p>
-                </div>
-              );
-            })}
+            <div>
+              {word.examples.slice(0, 1).map((example) => {
+                return (
+                  <div
+                    key={example.sentence}
+                    style={{
+                      padding: "8px 0 0 0",
+                      borderTop: "1px solid rgba(0, 0, 0, 0.06)",
+                    }}
+                  >
+                    <p>{example.sentence}</p>
+                    <p style={{ color: "rgba(0,0,0,0.6)", fontSize: "14px" }}>
+                      {example.translation}
+                    </p>
+                  </div>
+                );
+              })}
+            </div>
           </div>
         </>
       ) : (
