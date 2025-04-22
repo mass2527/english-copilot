@@ -1,5 +1,6 @@
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import CopyPlugin from "copy-webpack-plugin";
 import ExtReloader from "webpack-ext-reloader";
 
 const fileURL = import.meta.url;
@@ -7,7 +8,6 @@ const filepath = fileURLToPath(fileURL);
 const dirname = path.dirname(filepath);
 
 export default {
-  mode: "development",
   devtool: "source-map",
   entry: {
     Content: "./src/Content.tsx",
@@ -39,6 +39,9 @@ export default {
     path: path.resolve(dirname, "dist"),
   },
   plugins: [
+    new CopyPlugin({
+      patterns: [{ from: "manifest.json", to: "manifest.json" }],
+    }),
     new ExtReloader({
       port: 9090,
       reloadPage: true,
