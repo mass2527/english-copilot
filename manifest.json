@@ -5,8 +5,8 @@
   "manifest_version": 3,
   "web_accessible_resources": [
     {
-      "resources": ["assets/fonts/*"],
-      "matches": ["https://*/*"]
+      "resources": ["static/fonts/*.woff2"],
+      "matches": ["<all_urls>"]
     }
   ],
   "action": {
@@ -15,7 +15,7 @@
   "content_scripts": [
     {
       "js": ["dist/Content.js"],
-      "matches": ["https://*/*"]
+      "matches": ["<all_urls>"]
     }
   ],
   "background": {
