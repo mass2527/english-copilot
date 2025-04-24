@@ -40,6 +40,7 @@ async function fetchWordDetails(word: string) {
       sentence: $(el).find(".txt_example .txt_ex").text(),
       translation: $(el).find(".mean_example .txt_ex").text(),
     }))
+    .slice(0, 3)
     .get();
 
   return { definitions, pronunciations, examples };
