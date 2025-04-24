@@ -92,7 +92,7 @@ export const WordTooltip = forwardRef<
               style={{
                 display: "flex",
                 flexWrap: "wrap",
-                gap: "12px",
+                gap: "8px",
                 fontSize: "14px",
               }}
             >
@@ -152,7 +152,6 @@ export const WordTooltip = forwardRef<
             style={{
               display: "flex",
               flexDirection: "column",
-              gap: "12px",
               overflowY: "auto",
               overscrollBehaviorY: "contain",
               maxHeight: "300px",
@@ -162,7 +161,7 @@ export const WordTooltip = forwardRef<
             <ol
               style={{
                 lineHeight: "1.5",
-                marginBottom: "12px",
+                marginBottom: "8px",
                 listStyle: "decimal",
                 listStylePosition: "inside",
                 margin: "0px",
@@ -174,18 +173,27 @@ export const WordTooltip = forwardRef<
               })}
             </ol>
 
-            <div>
-              {word.examples.slice(0, 1).map((example) => {
+            <div style={{ marginTop: "16px" }}>
+              {word.examples.map((example) => {
                 return (
                   <div
                     key={example.sentence}
                     style={{
-                      padding: "0px",
+                      display: "flex",
+                      flexDirection: "column",
+                      gap: "4px",
                       borderTop: "1px solid rgba(0, 0, 0, 0.06)",
+                      padding: "16px 0px",
                     }}
                   >
-                    <p>{example.sentence}</p>
-                    <p style={{ color: "rgba(0,0,0,0.6)", fontSize: "14px" }}>
+                    <p style={{ margin: "0px" }}>{example.sentence}</p>
+                    <p
+                      style={{
+                        color: "rgba(0,0,0,0.6)",
+                        fontSize: "14px",
+                        margin: "0px",
+                      }}
+                    >
                       {example.translation}
                     </p>
                   </div>
