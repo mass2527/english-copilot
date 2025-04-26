@@ -84,6 +84,7 @@ styleElement.textContent = `
 
 a {
   text-decoration: none;
+  color: inherit;
 }
 `;
 shadowRoot.appendChild(styleElement);
