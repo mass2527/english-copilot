@@ -97,13 +97,17 @@ export const WordTooltip = forwardRef<
               }}
             >
               {word.pronunciations.map((pronunciation) => {
-                const label = { american: "미국", british: "영국" }[
+                const label = { american: "US", british: "UK" }[
                   pronunciation.accent
                 ];
                 return (
                   <div
                     key={pronunciation.href}
-                    style={{ display: "flex", alignItems: "center" }}
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "8px",
+                    }}
                   >
                     <span
                       style={{
@@ -112,13 +116,12 @@ export const WordTooltip = forwardRef<
                         padding: "2px 8px",
                         color: "#5856D6",
                         fontWeight: 500,
-                        marginRight: "6px",
                       }}
                     >
-                      {label}:{" "}
-                      <span style={{ fontStyle: "italic" }}>
-                        {pronunciation.symbol}
-                      </span>
+                      {label}
+                    </span>
+                    <span style={{ fontStyle: "italic" }}>
+                      {pronunciation.symbol}
                     </span>
                     <button
                       type="button"
@@ -186,10 +189,7 @@ export const WordTooltip = forwardRef<
               {word.examples.map((example) => {
                 return (
                   <div key={example.sentence}>
-                    <HighlightWord
-                      text={example.sentence}
-                      targetWord={word.word}
-                    />
+                    <HighlightWord text={example.sentence} word={word.word} />
 
                     <p
                       style={{
@@ -282,23 +282,22 @@ function NoDefinitionsFound({ word }: WordDetails) {
   );
 }
 
-function HighlightWord({
-  text,
-  targetWord,
-}: { text: string; targetWord: string }) {
-  const regex = new RegExp(`(${targetWord})`, "gi");
+function HighlightWord({ text, word }: { text: string; word: string }) {
+  const regex = new RegExp(`(${word})`, "gi");
 
   return text.split(regex).map((part, index) => {
-    if (part.toLowerCase() === targetWord) {
+    if (part.toLowerCase() === word) {
       return (
         <mark
           // biome-ignore lint/suspicious/noArrayIndexKey:
           key={index}
           style={{
-            display: "inline",
-            backgroundColor: "transparent",
-            color: "#007AFF",
-            fontWeight: 700,
+            backgroundColor: "rgba(255, 236, 25, 0.6)",
+            padding: "0 2px",
+            borderRadius: "2px",
+            display: "inline-block",
+            lineHeight: "1.2",
+            fontWeight: 500,
           }}
         >
           {part}
