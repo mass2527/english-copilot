@@ -179,19 +179,21 @@ export const WordTooltip = forwardRef<
                   <div
                     key={example.sentence}
                     style={{
-                      display: "flex",
-                      flexDirection: "column",
-                      gap: "4px",
                       borderTop: "1px solid rgba(0, 0, 0, 0.06)",
                       padding: "16px 0px",
                     }}
                   >
-                    <p style={{ margin: "0px" }}>{example.sentence}</p>
+                    <HighlightWord
+                      text={example.sentence}
+                      targetWord={word.word}
+                    />
+
                     <p
                       style={{
                         color: "rgba(0,0,0,0.6)",
                         fontSize: "14px",
                         margin: "0px",
+                        marginTop: "4px",
                       }}
                     >
                       {example.translation}
@@ -275,4 +277,32 @@ function NoDefinitionsFound({ word }: WordDetails) {
       </a>
     </div>
   );
+}
+
+function HighlightWord({
+  text,
+  targetWord,
+}: { text: string; targetWord: string }) {
+  const regex = new RegExp(`(${targetWord})`, "gi");
+
+  return text.split(regex).map((part, index) => {
+    if (part.toLowerCase() === targetWord) {
+      return (
+        <mark
+          // biome-ignore lint/suspicious/noArrayIndexKey:
+          key={index}
+          style={{
+            display: "inline",
+            backgroundColor: "transparent",
+            color: "#007AFF",
+            fontWeight: 700,
+          }}
+        >
+          {part}
+        </mark>
+      );
+    }
+
+    return part;
+  });
 }
