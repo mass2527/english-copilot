@@ -152,6 +152,7 @@ export const WordTooltip = forwardRef<
             style={{
               display: "flex",
               flexDirection: "column",
+              gap: "16px",
               overflowY: "auto",
               overscrollBehaviorY: "contain",
               maxHeight: "300px",
@@ -173,16 +174,18 @@ export const WordTooltip = forwardRef<
               })}
             </ol>
 
-            <div style={{ marginTop: "16px" }}>
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: "12px",
+                paddingTop: "16px",
+                borderTop: "1px solid rgba(0, 0, 0, 0.06)",
+              }}
+            >
               {word.examples.map((example) => {
                 return (
-                  <div
-                    key={example.sentence}
-                    style={{
-                      borderTop: "1px solid rgba(0, 0, 0, 0.06)",
-                      padding: "16px 0px",
-                    }}
-                  >
+                  <div key={example.sentence}>
                     <HighlightWord
                       text={example.sentence}
                       targetWord={word.word}
