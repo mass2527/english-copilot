@@ -26,5 +26,9 @@ export function useIsCommandKeyPressed() {
     setIsCommandKeyPressed(false);
   });
 
+  useWindowEventListener("blur", () => {
+    setIsCommandKeyPressed(false);
+  });
+
   return isCommandKeyPressed;
 }

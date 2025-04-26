@@ -111,5 +111,9 @@ export function useWordDetails({
     setWordDetails(null);
   });
 
+  useWindowEventListener("blur", () => {
+    setWordDetails(null);
+  });
+
   return { wordDetails, point };
 }
