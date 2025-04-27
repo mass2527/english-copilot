@@ -7,7 +7,7 @@
     "dev": "webpack --watch --mode development",
     "build": "webpack --mode production",
     "format": "biome check --fix",
-    "release": "pnpm run build && zip -r english-copilot.zip ./dist"
+    "release": "pnpm run build && zip -r english-copilot@$npm_package_version.zip ./dist"
   },
   "type": "module",
   "keywords": [],
