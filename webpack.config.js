@@ -7,55 +7,61 @@ const fileURL = import.meta.url;
 const filepath = fileURLToPath(fileURL);
 const dirname = path.dirname(filepath);
 
-export default {
-  devtool: "source-map",
-  entry: {
-    Content: "./src/Content.tsx",
-    background: "./src/background.ts",
-  },
-  module: {
-    rules: [
-      {
-        test: /\.tsx?$/,
-        use: {
-          loader: "babel-loader",
-          options: {
-            presets: [
-              "@babel/preset-env",
-              ["@babel/preset-react", { runtime: "automatic" }],
-              "@babel/preset-typescript",
-            ],
+export default (env, argv) => {
+  const mode = argv.mode ?? "production";
+  const isDevelopment = mode === "development";
+
+  return {
+    mode,
+    devtool: isDevelopment ? "source-map" : "none",
+    entry: {
+      Content: "./src/Content.tsx",
+      background: "./src/background.ts",
+    },
+    module: {
+      rules: [
+        {
+          test: /\.tsx?$/,
+          use: {
+            loader: "babel-loader",
+            options: {
+              presets: [
+                "@babel/preset-env",
+                ["@babel/preset-react", { runtime: "automatic" }],
+                "@babel/preset-typescript",
+              ],
+            },
           },
+          exclude: /node_modules/,
         },
-        exclude: /node_modules/,
-      },
-      {
-        test: /\.css$/i,
-        use: ["style-loader", "css-loader"],
-      },
-    ],
-  },
-  resolve: {
-    extensions: [".tsx", ".ts", ".js"],
-  },
-  output: {
-    filename: "[name].js",
-    path: path.resolve(dirname, "dist"),
-  },
-  plugins: [
-    new CopyPlugin({
-      patterns: [
-        { from: "manifest.json", to: "manifest.json" },
-        { from: "static", to: "static" },
+        {
+          test: /\.css$/i,
+          use: ["style-loader", "css-loader"],
+        },
       ],
-    }),
-    new ExtReloader({
-      port: 9090,
-      reloadPage: true,
-      entries: {
-        background: "background",
-        contentScript: "Content",
-      },
-    }),
-  ],
+    },
+    resolve: {
+      extensions: [".tsx", ".ts", ".js"],
+    },
+    output: {
+      filename: "[name].js",
+      path: path.resolve(dirname, "dist"),
+    },
+    plugins: [
+      new CopyPlugin({
+        patterns: [
+          { from: "manifest.json", to: "manifest.json" },
+          { from: "static", to: "static" },
+        ],
+      }),
+      new ExtReloader({
+        port: 9090,
+        reloadPage: true,
+        entries: {
+          background: "background",
+          contentScript: "Content",
+        },
+      }),
+    ],
+  };
 };
