@@ -13,7 +13,7 @@ export default (env, argv) => {
 
   return {
     mode,
-    devtool: isDevelopment ? "source-map" : "none",
+    devtool: isDevelopment ? "source-map" : false,
     entry: {
       Content: "./src/Content.tsx",
       background: "./src/background.ts",
