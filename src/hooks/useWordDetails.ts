@@ -85,7 +85,7 @@ export function useWordDetails({
         return;
       }
 
-      const isSameWord = word === wordDetails?.word;
+      const isSameWord = word.toLowerCase() === wordDetails?.word.toLowerCase();
       if (isSameWord) {
         return;
       }
