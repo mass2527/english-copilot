@@ -52,6 +52,7 @@ export default (env, argv) => {
         patterns: [
           { from: "manifest.json", to: "manifest.json" },
           { from: "static", to: "static" },
+          { from: "popup.html", to: "popup.html" },
         ],
       }),
       new ExtReloader({
