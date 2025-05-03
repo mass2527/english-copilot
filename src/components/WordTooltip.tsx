@@ -189,7 +189,7 @@ export const WordTooltip = forwardRef<
               {word.examples.map((example) => {
                 return (
                   <div key={example.sentence}>
-                    <HighlightWord text={example.sentence} word={word.word} />
+                    <WordHighlighter text={example.sentence} word={word.word} />
 
                     <p
                       style={{
@@ -208,13 +208,13 @@ export const WordTooltip = forwardRef<
           </div>
         </>
       ) : (
-        <NoDefinitionsFound {...word} />
+        <NoWordInfo {...word} />
       )}
     </div>
   );
 });
 
-function NoDefinitionsFound({ word }: WordDetails) {
+function NoWordInfo({ word }: WordDetails) {
   return (
     <div
       style={{
@@ -276,7 +276,7 @@ function NoDefinitionsFound({ word }: WordDetails) {
   );
 }
 
-function HighlightWord({ text, word }: { text: string; word: string }) {
+function WordHighlighter({ text, word }: { text: string; word: string }) {
   const regex = new RegExp(`(${word})`, "gi");
 
   return text.split(regex).map((part, index) => {
