@@ -269,12 +269,6 @@ function NoDefinitionsFound({ word }: WordDetails) {
           cursor: "pointer",
           transition: "background-color 0.2s ease",
         }}
-        onMouseOver={(e) => {
-          e.currentTarget.style.backgroundColor = "#0062CC";
-        }}
-        onMouseOut={(e) => {
-          e.currentTarget.style.backgroundColor = "#007AFF";
-        }}
       >
         <GoogleIcon /> Google에서 검색
       </a>
