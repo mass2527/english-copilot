@@ -28,7 +28,7 @@ jobs:
       - name: Zip
         run: zip -r english-copilot.zip ./dist
 
-      - name: Upload & Publish to Chrome Web Store
+      - name: Publish
         uses: mnao305/chrome-extension-upload@v5.0.0
         with:
           file-path: english-copilot.zip
