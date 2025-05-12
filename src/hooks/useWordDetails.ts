@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 
 import { useLatestRef } from "./useLatestRef";
 
@@ -66,6 +66,7 @@ export function useWordDetails({
   const [wordDetails, setWordDetails] = useState<WordDetails | null>(null);
   const [point, setPoint] = useState<Point>({ x: 0, y: 0 });
   const latestEnabledRef = useLatestRef(enabled);
+  const requestingWordsRef = useRef(new Set<string>());
 
   async function handleMouseMove(event: MouseEvent) {
     if (latestEnabledRef.current) {
@@ -85,23 +86,36 @@ export function useWordDetails({
         return;
       }
 
-      const isSameWord = word.toLowerCase() === wordDetails?.word.toLowerCase();
+      const lowerCaseWord = word.toLowerCase();
+
+      const isSameWord = lowerCaseWord === wordDetails?.word.toLowerCase();
       if (isSameWord) {
         return;
       }
 
-      const response = await chrome.runtime.sendMessage({
-        data: word.toLowerCase(),
-      });
-      setWordDetails(response);
-      const elementFontSize = Number.parseInt(
-        getComputedStyle(element).fontSize
-      );
+      if (requestingWordsRef.current.has(lowerCaseWord)) {
+        return;
+      }
 
-      setPoint({
-        x: event.clientX,
-        y: event.clientY + elementFontSize,
-      });
+      try {
+        const response = await chrome.runtime.sendMessage({
+          data: lowerCaseWord,
+        });
+
+        setWordDetails(response);
+        const elementFontSize = Number.parseInt(
+          getComputedStyle(element).fontSize
+        );
+
+        setPoint({
+          x: event.clientX,
+          y: event.clientY + elementFontSize,
+        });
+      } catch (error) {
+        console.error(error);
+      } finally {
+        requestingWordsRef.current.delete(lowerCaseWord);
+      }
     }
   }
 
