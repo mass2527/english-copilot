@@ -69,53 +69,55 @@ export function useWordDetails({
   const requestingWordsRef = useRef(new Set<string>());
 
   async function handleMouseMove(event: MouseEvent) {
-    if (latestEnabledRef.current) {
-      if (shouldSkip?.(event)) {
-        return;
-      }
+    if (!latestEnabledRef.current) {
+      return;
+    }
 
-      const element = document.elementFromPoint(event.clientX, event.clientY);
-      if (element === null) return;
+    if (shouldSkip?.(event)) {
+      return;
+    }
 
-      const word = findWordAtPointer(element, {
-        x: event.clientX,
-        y: event.clientY,
+    const element = document.elementFromPoint(event.clientX, event.clientY);
+    if (element === null) return;
+
+    const word = findWordAtPointer(element, {
+      x: event.clientX,
+      y: event.clientY,
+    });
+
+    if (word === null) {
+      return;
+    }
+
+    const lowerCaseWord = word.toLowerCase();
+
+    const isSameWord = lowerCaseWord === wordDetails?.word.toLowerCase();
+    if (isSameWord) {
+      return;
+    }
+
+    if (requestingWordsRef.current.has(lowerCaseWord)) {
+      return;
+    }
+
+    try {
+      const response = await chrome.runtime.sendMessage({
+        data: lowerCaseWord,
       });
 
-      if (word === null) {
-        return;
-      }
+      setWordDetails(response);
+      const elementFontSize = Number.parseInt(
+        getComputedStyle(element).fontSize
+      );
 
-      const lowerCaseWord = word.toLowerCase();
-
-      const isSameWord = lowerCaseWord === wordDetails?.word.toLowerCase();
-      if (isSameWord) {
-        return;
-      }
-
-      if (requestingWordsRef.current.has(lowerCaseWord)) {
-        return;
-      }
-
-      try {
-        const response = await chrome.runtime.sendMessage({
-          data: lowerCaseWord,
-        });
-
-        setWordDetails(response);
-        const elementFontSize = Number.parseInt(
-          getComputedStyle(element).fontSize
-        );
-
-        setPoint({
-          x: event.clientX,
-          y: event.clientY + elementFontSize,
-        });
-      } catch (error) {
-        console.error(error);
-      } finally {
-        requestingWordsRef.current.delete(lowerCaseWord);
-      }
+      setPoint({
+        x: event.clientX,
+        y: event.clientY + elementFontSize,
+      });
+    } catch (error) {
+      console.error(error);
+    } finally {
+      requestingWordsRef.current.delete(lowerCaseWord);
     }
   }
 
