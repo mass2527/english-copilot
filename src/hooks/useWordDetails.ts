@@ -100,6 +100,8 @@ export function useWordDetails({
       return;
     }
 
+    requestingWordsRef.current.add(lowerCaseWord);
+
     try {
       const response = await chrome.runtime.sendMessage({
         data: lowerCaseWord,
