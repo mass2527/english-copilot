@@ -106,13 +106,10 @@ export function useWordDetails({
       });
 
       setWordDetails(response);
-      const elementFontSize = Number.parseInt(
-        getComputedStyle(element).fontSize
-      );
-
+      const lineHeight = Number.parseInt(getComputedStyle(element).lineHeight);
       setPoint({
         x: event.clientX,
-        y: event.clientY + elementFontSize,
+        y: event.clientY + lineHeight,
       });
     } catch (error) {
       console.error(error);
