@@ -1,12 +1,12 @@
 import { useRef } from "react";
 import { WordTooltip } from "./components/WordTooltip";
-import { useIsWordTooltipEnabled } from "./hooks/useIsWordTooltipEnabled";
+import { useAreKeysPressed } from "./hooks/useAreKeysPressed";
 import { useWordDetails } from "./hooks/useWordDetails";
 import { isPointInRect } from "./lib/isPointInRect";
 
 export function App() {
   const popoverRef = useRef<HTMLDivElement>(null);
-  const isWordTooltipEnabled = useIsWordTooltipEnabled();
+  const isWordTooltipEnabled = useAreKeysPressed(["KeyA", "KeyS"]);
   const { point, wordDetails } = useWordDetails({
     enabled: isWordTooltipEnabled,
     shouldSkip: (event) => {
