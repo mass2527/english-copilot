@@ -5,6 +5,10 @@ export function useAreKeysPressed(keys: string[]) {
   const [pressedKeys, setPressedKeys] = useState(new Set<string>());
 
   useWindowEventListener("keydown", (event) => {
+    if (event.repeat) {
+      return;
+    }
+
     setPressedKeys((prev) => new Set(prev).add(event.code));
   });
 
