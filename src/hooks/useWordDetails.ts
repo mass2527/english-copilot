@@ -85,7 +85,7 @@ export function useWordDetails({
       y: event.clientY,
     });
 
-    if (word === null) {
+    if (!word) {
       return;
     }
 
