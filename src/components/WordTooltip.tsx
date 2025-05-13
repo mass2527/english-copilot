@@ -70,7 +70,7 @@ export const WordTooltip = forwardRef<
                 fontSize: "20px",
                 fontWeight: 700,
                 margin: "0 0 8px 0",
-                color: hasDefinitions ? "#007AFF" : "#000",
+                color: hasDefinitions ? "#0047FF" : "#000",
               }}
             >
               <a
@@ -259,7 +259,7 @@ function NoWordInfo({ word }: WordDetails) {
           alignItems: "center",
           justifyContent: "center",
           gap: "6px",
-          backgroundColor: "#007AFF",
+          backgroundColor: "#0047FF",
           color: "white",
           border: "none",
           borderRadius: "8px",
