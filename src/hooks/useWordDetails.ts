@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 
 import { useLatestRef } from "./useLatestRef";
 
@@ -67,60 +67,67 @@ export function useWordDetails({
   const [point, setPoint] = useState<Point>({ x: 0, y: 0 });
   const latestEnabledRef = useLatestRef(enabled);
   const requestingWordsRef = useRef(new Set<string>());
+  const latestWordDetailsRef = useLatestRef(wordDetails);
 
-  async function handleMouseMove(event: MouseEvent) {
-    if (!latestEnabledRef.current) {
-      return;
-    }
+  const debouncedHandleMouseMove = useCallback(
+    debounce(async (event: MouseEvent) => {
+      if (!latestEnabledRef.current) {
+        return;
+      }
 
-    if (shouldSkip?.(event)) {
-      return;
-    }
+      if (shouldSkip?.(event)) {
+        return;
+      }
 
-    const element = document.elementFromPoint(event.clientX, event.clientY);
-    if (element === null) return;
+      const element = document.elementFromPoint(event.clientX, event.clientY);
+      if (element === null) return;
 
-    const word = findWordAtPointer(element, {
-      x: event.clientX,
-      y: event.clientY,
-    });
-
-    if (!word) {
-      return;
-    }
-
-    const lowerCaseWord = word.toLowerCase();
-
-    const isSameWord = lowerCaseWord === wordDetails?.word.toLowerCase();
-    if (isSameWord) {
-      return;
-    }
-
-    if (requestingWordsRef.current.has(lowerCaseWord)) {
-      return;
-    }
-
-    requestingWordsRef.current.add(lowerCaseWord);
-
-    try {
-      const response = await chrome.runtime.sendMessage({
-        data: lowerCaseWord,
-      });
-
-      setWordDetails(response);
-      const lineHeight = Number.parseInt(getComputedStyle(element).lineHeight);
-      setPoint({
+      const word = findWordAtPointer(element, {
         x: event.clientX,
-        y: event.clientY + lineHeight,
+        y: event.clientY,
       });
-    } catch (error) {
-      console.error(error);
-    } finally {
-      requestingWordsRef.current.delete(lowerCaseWord);
-    }
-  }
 
-  useWindowEventListener("mousemove", debounce(handleMouseMove, 100));
+      if (!word) {
+        return;
+      }
+
+      const lowerCaseWord = word.toLowerCase();
+
+      const isSameWord =
+        lowerCaseWord === latestWordDetailsRef.current?.word.toLowerCase();
+      if (isSameWord) {
+        return;
+      }
+
+      if (requestingWordsRef.current.has(lowerCaseWord)) {
+        return;
+      }
+
+      requestingWordsRef.current.add(lowerCaseWord);
+
+      try {
+        const response = await chrome.runtime.sendMessage({
+          data: lowerCaseWord,
+        });
+
+        setWordDetails(response);
+        const lineHeight = Number.parseInt(
+          getComputedStyle(element).lineHeight
+        );
+        setPoint({
+          x: event.clientX,
+          y: event.clientY + lineHeight,
+        });
+      } catch (error) {
+        console.error(error);
+      } finally {
+        requestingWordsRef.current.delete(lowerCaseWord);
+      }
+    }, 100),
+    []
+  );
+
+  useWindowEventListener("mousemove", debouncedHandleMouseMove);
 
   useWindowEventListener("keyup", () => {
     setWordDetails(null);
